@@ -19,6 +19,7 @@ export function NotchNav({
   children,
   onActiveChange,
   className,
+  scrollRef,
   ...props
 }: NotchNavProps) {
   const navRef = useRef<HTMLDivElement>(null);
@@ -223,8 +224,9 @@ export function NotchNav({
 
         {/* Scrollable content */}
         <div
+          ref={scrollRef}
           className={cn(
-            "relative flex w-full items-center h-full justify-center overflow-y-auto overflow-x-hidden px-3 sm:px-4 md:px-6",
+            "relative flex w-full flex-col h-full overflow-y-auto overflow-x-hidden px-3 sm:px-4 md:px-6",
             isBottom ? "pt-3 pb-17.5" : "pt-17.5 pb-3"
           )}
         >

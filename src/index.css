@@ -4,9 +4,13 @@
   :root {
     --background: #ffffff;
     --foreground: #09090b;
+    --muted: #f4f4f5;
     --muted-foreground: #71717a;
     --border: #e4e4e7;
     --card: #ffffff;
+    --card-foreground: #09090b;
+    --primary: #ff7226;
+    --primary-foreground: #ffffff;
     --accent: #fff4ee;
     --ring: #ff7226;
 
@@ -33,9 +37,34 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-accent: var(--accent);
   --color-ring: var(--ring);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }

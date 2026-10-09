@@ -3,6 +3,7 @@ import type {
   ComponentType,
   HTMLAttributes,
   ReactNode,
+  RefObject,
 } from "react";
 import type { LucideIcon } from "lucide-react";
 
@@ -56,4 +57,5 @@ export interface NotchNavProps extends HTMLAttributes<HTMLDivElement> {
   showRightContent?: boolean;
   children?: ReactNode;
   onActiveChange?: (id: string) => void;
+  scrollRef?: RefObject<HTMLDivElement | null>;
 }

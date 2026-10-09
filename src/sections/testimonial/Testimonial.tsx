@@ -1,0 +1,17 @@
+import { StaggerTestimonials } from '@/components/testimonial/StaggerTestimonials';
+
+export function Testimonial() {
+  return (
+    <section id="testimonials" className="w-full py-16 sm:py-24">
+      <div className="mx-auto mb-10 max-w-2xl px-4 text-center">
+        <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">
+          Loved by teams everywhere
+        </h2>
+        <p className="mt-3 text-muted-foreground">
+          See what our customers have to say about working with Finora.
+        </p>
+      </div>
+      <StaggerTestimonials />
+    </section>
+  );
+}
