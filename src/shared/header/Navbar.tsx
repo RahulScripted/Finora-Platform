@@ -1,20 +1,29 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { NotchNav } from "@/components/ui/notch-nav/NotchNav";
+import { ScrollProvider } from "@/lib/scroll-context";
 import { NAV_ITEMS } from "@/types/nav-items";
 import { NavLogo } from "./NavLogo";
 import { NavSignUp } from "./NavSignUp";
 import { Testimonial } from "@/sections/testimonial/Testimonial";
 import { Faq } from "@/sections/faq/Faq";
+import { Features } from "@/sections/features/Features";
+import { SocialProof } from "@/sections/social-proof/SocialProof";
+import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import { Parallax } from "@/components/ui/Parallax";
 
 function Placeholder({ id, label }: { id: string; label: string }) {
   return (
-    <section
+    <AnimatedSection
       id={id}
-      className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-2 text-center"
+      className="flex min-h-[70vh] w-full flex-col items-center justify-center gap-2 text-center"
     >
-      <p className="text-sm text-muted-foreground">Section</p>
-      <p className="text-3xl font-bold text-foreground capitalize">{label}</p>
-    </section>
+      <Parallax speed={0.25}>
+        <p className="text-sm uppercase tracking-widest text-muted-foreground">Section</p>
+      </Parallax>
+      <Parallax speed={-0.2}>
+        <p className="text-4xl font-bold text-foreground capitalize sm:text-6xl">{label}</p>
+      </Parallax>
+    </AnimatedSection>
   );
 }
 
@@ -61,11 +70,20 @@ export default function Navbar() {
       onActiveChange={handleActiveChange}
       scrollRef={scrollRef}
     >
-      {NAV_ITEMS.map(({ id, label }) => {
-        if (id === "testimonials") return <Testimonial key={id} />;
-        if (id === "faq") return <Faq key={id} />;
-        return <Placeholder key={id} id={id} label={label} />;
-      })}
+      <ScrollProvider scrollRef={scrollRef}>
+        {NAV_ITEMS.map(({ id, label }) => {
+          if (id === "features")
+            return (
+              <Fragment key={id}>
+                <SocialProof />
+                <Features />
+              </Fragment>
+            );
+          if (id === "testimonials") return <Testimonial key={id} />;
+          if (id === "faq") return <Faq key={id} />;
+          return <Placeholder key={id} id={id} label={label} />;
+        })}
+      </ScrollProvider>
     </NotchNav>
   );
 }

@@ -29,7 +29,7 @@ export function SupportContactCard({ supportAvatars }: SupportContactCardProps) 
           </p>
         </div>
       </div>
-      <Button className="shrink-0">Contact support</Button>
+      <Button className="w-full shrink-0 sm:w-auto">Contact support</Button>
     </div>
   );
 }
