@@ -1,18 +1,15 @@
-import { useState } from 'react';
+import { TrendingUp } from 'lucide-react';
 
 import { Card, CardContent } from '../card';
 import { DEFAULT_RANGE, rangeData } from '@/types/invoice-summary';
-import type { RangeId } from '@/types/invoice-summary';
 import { BalanceChart } from './BalanceChart';
-import { RangeTabs } from './RangeTabs';
 
 /**
- * Feature card: Invoice & Payout Summary. Headline + a balance panel with a
- * range selector that drives an animated area chart.
+ * Feature card: Invoice & Payout Summary. Headline + a balance panel with an
+ * animated area chart for the 6-month range.
  */
 export function InvoiceSummaryCard() {
-  const [range, setRange] = useState<RangeId>(DEFAULT_RANGE);
-  const data = rangeData[range];
+  const data = rangeData[DEFAULT_RANGE];
 
   return (
     <Card className="relative h-full overflow-hidden">
@@ -28,15 +25,15 @@ export function InvoiceSummaryCard() {
         </div>
 
         <div className="mt-6 rounded-xl border border-border bg-muted/40 p-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Total balance</p>
-              <p className="mt-1 flex items-center gap-2 text-xl font-semibold">
-                {data.totalBalance}
-                <span className="text-xs font-medium text-primary">{data.changePct}</span>
-              </p>
-            </div>
-            <RangeTabs active={range} onChange={setRange} />
+          <div>
+            <p className="text-sm text-muted-foreground">Total balance</p>
+            <p className="mt-1 flex items-center gap-2 text-xl font-semibold">
+              {data.totalBalance}
+              <span className="inline-flex items-center gap-0.5 text-xs font-medium text-green-600 dark:text-green-500">
+                <TrendingUp className="size-3" strokeWidth={2.5} />
+                {data.changePct}
+              </span>
+            </p>
           </div>
           <div className="mt-4">
             <BalanceChart data={data} />

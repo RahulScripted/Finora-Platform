@@ -18,6 +18,13 @@
     --brand-from: #e8352d;
     --brand-mid: #ff7226;
     --brand-to: #ff6838;
+
+    /* Chart palette (Finora) */
+    --chart-1: #ff7226;
+    --chart-2: #ff5030;
+    --chart-3: #e8352d;
+    --chart-4: #ffb26b;
+    --chart-5: #a06bff;
   }
 
   * {
@@ -41,6 +48,15 @@
   }
 }
 
+/* Hide the scrollbar while keeping scroll functionality */
+.cinematic-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.cinematic-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/WebKit */
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -53,6 +69,11 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-accent: var(--accent);
   --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;

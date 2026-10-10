@@ -3,16 +3,15 @@ import { Card, CardContent } from './card';
 import FolderFloat from './FolderFloat';
 import { Integration } from './integration';
 import { InvoiceSummaryCard } from './invoice-summary';
-import { AccountSummaryCard } from './account-summary';
 import { AnalysisCard } from './analysis';
 import lovedOnes from '@/assets/webp/ loved-ones.webp';
-import { useGsapReveal, useDrawLoop, useCountUp, useScanLine } from '@/lib/gsap';
+import { useGsapReveal, useDrawPaths, useCountUp, useScanLine } from '@/lib/gsap';
 import { useScroller } from '@/lib/scroll-context';
 
 export function Features() {
   const gridRef = useGsapReveal<HTMLDivElement>({ childrenSelector: '[data-feature-card]', y: 48, stagger: 0.15 });
   const countRef = useCountUp<HTMLSpanElement>(100, { suffix: '%' });
-  const arcRef = useDrawLoop<SVGSVGElement>({ duration: 2, hold: 0.8 });
+  const arcRef = useDrawPaths<SVGSVGElement>({ duration: 2 });
   const shieldRef = useGsapReveal<HTMLDivElement>({ scale: 0.3, rotate: -90, y: 0, delay: 0.2 });
   const usersRef = useGsapReveal<HTMLDivElement>({ scale: 0.3, rotate: -90, y: 0, delay: 0.2 });
   const scanRef = useScanLine<HTMLSpanElement>({ distance: 48, duration: 1.6 });
@@ -179,15 +178,11 @@ export function Features() {
               <InvoiceSummaryCard />
             </div>
 
-            {/* Card 7 — Account & credit summary */}
-            <div data-feature-card className="break-inside-avoid">
-              <AccountSummaryCard />
-            </div>
-
             {/* Card 8 — Activity analysis (3D skyline) */}
             <div data-feature-card className="break-inside-avoid">
               <AnalysisCard />
             </div>
+
           </div>
         </div>
       </div>

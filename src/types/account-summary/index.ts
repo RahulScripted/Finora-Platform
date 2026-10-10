@@ -13,11 +13,11 @@ export type AccountSummary = {
 };
 
 export const accountSummary: AccountSummary = {
-  mainBalance: '$73,300',
+  mainBalance: '₹73,300',
   accountNumber: '4921 7764 2203 8847',
-  creditSpentLabel: '$2,000 credit spent',
+  creditSpentLabel: '₹2,000 credit spent',
   creditUsedPct: 42,
   holderName: 'Alexander Grayson',
   productType: 'SCF FLEXI TL',
-  availableCredit: '$71,300',
+  availableCredit: '₹71,300',
 };

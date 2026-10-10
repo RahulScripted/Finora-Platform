@@ -4,6 +4,7 @@ import { ScrollProvider } from "@/lib/scroll-context";
 import { NAV_ITEMS } from "@/types/nav-items";
 import { NavLogo } from "./NavLogo";
 import { NavSignUp } from "./NavSignUp";
+import { Hero } from "@/sections/hero/Hero";
 import { Testimonial } from "@/sections/testimonial/Testimonial";
 import { Faq } from "@/sections/faq/Faq";
 import { Features } from "@/sections/features/Features";
@@ -72,6 +73,7 @@ export default function Navbar() {
     >
       <ScrollProvider scrollRef={scrollRef}>
         {NAV_ITEMS.map(({ id, label }) => {
+          if (id === "home") return <Hero key={id} />;
           if (id === "features")
             return (
               <Fragment key={id}>

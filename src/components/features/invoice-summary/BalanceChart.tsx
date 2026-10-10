@@ -54,6 +54,7 @@ export function BalanceChart({ data }: BalanceChartProps) {
             strokeWidth={2}
             fill="none"
             dot={false}
+            activeDot={false}
             isAnimationActive
           />
           <Area
