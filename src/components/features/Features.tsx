@@ -1,49 +1,18 @@
 import { Shield, Users } from 'lucide-react';
 import { Card, CardContent } from './card';
 import FolderFloat from './FolderFloat';
-import { useGsapReveal, useDrawPaths, useDrawLoop, useCountUp, useScanLine } from '@/lib/gsap';
+import { Integration } from './integration';
+import { InvoiceSummaryCard } from './invoice-summary';
+import { AccountSummaryCard } from './account-summary';
+import { AnalysisCard } from './analysis';
+import lovedOnes from '@/assets/webp/ loved-ones.webp';
+import { useGsapReveal, useDrawLoop, useCountUp, useScanLine } from '@/lib/gsap';
 import { useScroller } from '@/lib/scroll-context';
-import { people } from '@/types/features';
-
-function AvatarRows() {
-  const ref = useGsapReveal<HTMLDivElement>({ childrenSelector: '[data-avatar-row]', x: 24, y: 0, stagger: 0.2, delay: 0.3 });
-  return (
-    <div
-      ref={ref}
-      className="relative mt-6 before:absolute before:inset-0 before:mx-auto before:w-px before:bg-border sm:-my-6 sm:-mr-6"
-    >
-      <div className="relative flex h-full flex-col justify-center space-y-6 py-6">
-        {people.map((p) => (
-          <div
-            key={p.name}
-            data-avatar-row
-            className={`relative flex items-center gap-2 ${p.offset}`}
-          >
-            {p.align === 'start' && (
-              <div className={`ring-background ${p.size} ring-4`}>
-                <img className="size-full rounded-full object-cover" src={p.src} alt={p.name} />
-              </div>
-            )}
-            <span className="block h-fit rounded bg-muted px-2 py-1 text-xs shadow-sm">
-              {p.name}
-            </span>
-            {p.align === 'end' && (
-              <div className={`ring-background ${p.size} ring-4`}>
-                <img className="size-full rounded-full object-cover" src={p.src} alt={p.name} />
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export function Features() {
   const gridRef = useGsapReveal<HTMLDivElement>({ childrenSelector: '[data-feature-card]', y: 48, stagger: 0.15 });
   const countRef = useCountUp<HTMLSpanElement>(100, { suffix: '%' });
   const arcRef = useDrawLoop<SVGSVGElement>({ duration: 2, hold: 0.8 });
-  const chart2Ref = useDrawPaths<SVGSVGElement>({ duration: 2.6 });
   const shieldRef = useGsapReveal<HTMLDivElement>({ scale: 0.3, rotate: -90, y: 0, delay: 0.2 });
   const usersRef = useGsapReveal<HTMLDivElement>({ scale: 0.3, rotate: -90, y: 0, delay: 0.2 });
   const scanRef = useScanLine<HTMLSpanElement>({ distance: 48, duration: 1.6 });
@@ -53,10 +22,10 @@ export function Features() {
     <section className="w-full py-16 md:py-32">
       <div className="mx-auto w-full px-6">
         <div className="relative">
-          <div ref={gridRef} className="relative z-10 grid grid-cols-6 gap-3">
+          <div ref={gridRef} className="relative z-10 gap-3 sm:columns-2 lg:columns-3 [&>*]:mb-3">
             {/* Card 1 — 100% customizable with animated arc + count up */}
-            <div data-feature-card className="col-span-full lg:col-span-2">
-              <Card className="relative flex h-full overflow-hidden">
+            <div data-feature-card className="break-inside-avoid">
+              <Card className="relative flex overflow-hidden">
                 <CardContent className="relative m-auto size-fit pt-6">
                   <div className="relative flex h-28 w-56 items-center justify-center">
                     <span className="relative block w-fit text-5xl font-semibold">
@@ -84,8 +53,8 @@ export function Features() {
             </div>
 
             {/* Card 2 — animated fingerprint */}
-            <div data-feature-card className="col-span-full sm:col-span-3 lg:col-span-2">
-              <Card className="relative h-full overflow-hidden">
+            <div data-feature-card className="break-inside-avoid">
+              <Card className="relative overflow-hidden">
                 <CardContent className="pt-6">
                   <div className="relative mx-auto flex aspect-square size-32 items-center justify-center overflow-hidden">
                     <svg
@@ -116,8 +85,8 @@ export function Features() {
             </div>
 
             {/* Card 3 — Faster than light with floating folder */}
-            <div data-feature-card className="col-span-full sm:col-span-3 lg:col-span-2">
-              <Card className="relative h-full overflow-hidden">
+            <div data-feature-card className="break-inside-avoid">
+              <Card className="relative overflow-hidden">
                 <CardContent className="flex flex-col pt-6">
                   <div className="flex min-h-56 items-end justify-center overflow-hidden px-2 pt-24">
                     <FolderFloat
@@ -153,71 +122,71 @@ export function Features() {
               </Card>
             </div>
 
-            {/* Card 4 — Shield + animated chart */}
-            <div data-feature-card className="col-span-full lg:col-span-3">
-              <Card className="relative h-full overflow-hidden">
-                <CardContent className="grid pt-6 sm:grid-cols-2">
-                  <div className="relative z-10 flex flex-col justify-between space-y-12 lg:space-y-6">
+            {/* Card 4 — Shield + integration graphic */}
+            <div data-feature-card className="break-inside-avoid">
+              <Card className="relative overflow-hidden">
+                <CardContent className="flex flex-col pt-6">
+                  <div className="relative z-10 space-y-2">
                     <div
                       ref={shieldRef}
                       className="relative flex aspect-square size-12 items-center justify-center"
                     >
                       <Shield className="m-auto size-5" strokeWidth={1} />
                     </div>
-                    <div className="space-y-2">
-                      <h2 className="text-lg font-medium text-zinc-800">Reliable &amp; resilient</h2>
-                      <p className="text-muted-foreground">
-                        Built on infrastructure that stays up so your work never skips a beat.
-                      </p>
-                    </div>
+                    <h2 className="text-lg font-medium text-zinc-800">Reliable &amp; resilient</h2>
+                    <p className="text-muted-foreground">
+                      Built on infrastructure that stays up so your work never skips a beat. Finora
+                      keeps your banking, cards, payouts, and treasury connected in one unified
+                      place.
+                    </p>
                   </div>
-                  <div className="relative mt-6 h-fit p-6 py-6 sm:ml-6 -mb-6 -mr-6">
-                    <div className="absolute left-3 top-2 flex gap-1">
-                      <span className="block size-2 rounded-full bg-border" />
-                      <span className="block size-2 rounded-full bg-border" />
-                      <span className="block size-2 rounded-full bg-border" />
-                    </div>
-                    <svg
-                      ref={chart2Ref}
-                      className="w-full sm:w-[150%] text-muted-foreground"
-                      viewBox="0 0 366 231"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        className="text-primary"
-                        d="M1 179.796L4.05663 172.195V183.933L7.20122 174.398L8.45592 183.933L10.0546 186.948V155.455L12.6353 152.613V145.122L15.3021 134.71V149.804V155.455L16.6916 160.829L18.1222 172.195V158.182L19.8001 152.613L21.4105 148.111V137.548L23.6863 142.407V126.049L25.7658 127.87V120.525L27.2755 118.066L29.1801 112.407V123.822L31.0426 120.525V130.26L32.3559 134.71L34.406 145.122V137.548L35.8982 130.26L37.1871 126.049L38.6578 134.71L40.659 138.977V130.26V126.049L43.7557 130.26V123.822L45.972 112.407L47.3391 103.407V92.4726L49.2133 98.4651V106.053L52.5797 89.7556L54.4559 82.7747L56.1181 87.9656L58.9383 89.7556V98.4651L60.7617 103.407L62.0545 123.822L63.8789 118.066L65.631 122.082L68.5479 114.229L70.299 109.729L71.8899 118.066L73.5785 123.822V130.26L74.9446 134.861L76.9243 127.87L78.352 134.71V138.977L80.0787 142.407V152.613L83.0415 142.407V130.26L86.791 123.822L89.0121 116.645V122.082L90.6059 127.87L92.3541 131.77L93.7104 123.822L95.4635 118.066L96.7553 122.082V137.548L99.7094 140.988V131.77L101.711 120.525L103.036 116.645V133.348L104.893 136.218L106.951 140.988L108.933 134.71L110.797 130.26L112.856 140.988V148.111L115.711 152.613L117.941 145.122L119.999 140.988L121.501 148.111L123.4 152.613L125.401 158.182L127.992 152.613L131.578 146.76V155.455L134.143 158.182L135.818 164.629L138.329 158.182L140.612 160.829L144.117 166.757L146.118 155.455L147.823 149.804L151.02 152.613L154.886 145.122L158.496 140.988V133.348L161.295 127.87V122.082L162.855 116.645V109.729L164.83 103.407L166.894 109.729L176.249 98.4651L178.254 106.169L180.77 98.4651V81.045L182.906 69.1641L184.8 56.8669L186.477 62.8428L187.848 79.7483L188.849 106.169L191.351 79.7483L193.485 75.645V98.4651L196.622 94.4523L198.623 87.4228V79.7483L200.717 75.645L202.276 81.045V89.3966L203.638 113.023L205.334 99.8037L207.164 94.4523L208.982 98.4651V102.176L211.267 107.64L212.788 81.045L214.437 66.0083L216.19 62.8428L217.941 56.8669V73.676V79.7483L220.28 75.645L222.516 66.0083V73.676H226.174V84.8662L228.566 98.4651L230.316 75.645L233.61 94.4523V104.25L236.882 102.176L239.543 113.023L241.057 98.4651L243.604 94.4523L244.975 106.169L245.975 87.4228L247.272 89.3966L250.732 84.8662L251.733 96.7549L254.644 94.4523L257.452 99.8037L259.853 91.3111L261.193 84.8662L264.162 75.645L265.808 87.4228L267.247 58.4895L269.757 66.0083L276.625 13.5146L273.33 58.4895L276.25 67.6563L282.377 20.1968L281.37 58.4895V66.0083L283.579 75.645L286.033 56.8669L287.436 73.676L290.628 77.6636L292.414 84.8662L294.214 61.3904L296.215 18.9623L300.826 0.947876L297.531 56.8669L299.973 62.8428L305.548 22.0598L299.755 114.956L301.907 105.378L304.192 112.688V94.9932L308.009 80.0829L310.003 94.9932L311.004 102.127L312.386 105.378L315.007 112.688L316.853 98.004L318.895 105.378L321.257 94.9932L324.349 100.81L325.032 80.0829L327.604 61.5733L329.357 74.9864L332.611 52.6565L334.352 48.5552L335.785 55.2637L338.377 59.5888V73.426L341.699 87.5181L343.843 93.4347L347.714 82.1171L350.229 78.6821L351.974 89.7556L353.323 94.9932L355.821 93.4347L357.799 102.127L360.684 108.794L363.219 98.004L365 89.7556"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        fill="none"
-                      />
-                    </svg>
+                  <div className="relative mt-6 aspect-564/480 w-full">
+                    <Integration />
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Card 5 — Users + animated avatar rows */}
-            <div data-feature-card className="col-span-full lg:col-span-3">
-              <Card className="relative h-full overflow-hidden">
-                <CardContent className="grid h-full pt-6 sm:grid-cols-2">
-                  <div className="relative z-10 flex flex-col justify-between space-y-12 lg:space-y-6">
+            {/* Card 5 — Users + loved ones image */}
+            <div data-feature-card className="break-inside-avoid">
+              <Card className="relative overflow-hidden">
+                <CardContent className="flex flex-col pt-6">
+                  <div className="relative z-10 space-y-2">
                     <div
                       ref={usersRef}
                       className="relative flex aspect-square size-12 items-center justify-center"
                     >
                       <Users className="m-auto size-6" strokeWidth={1} />
                     </div>
-                    <div className="space-y-2">
-                      <h2 className="text-lg font-medium">Keep your loved ones safe</h2>
-                      <p className="text-muted-foreground">
-                        Share access with the people you trust and stay in control together.
-                      </p>
-                    </div>
+                    <h2 className="text-lg font-medium">Keep your loved ones safe</h2>
+                    <p className="text-muted-foreground">
+                      Share access with the people you trust and stay in control together.
+                    </p>
                   </div>
-                  <AvatarRows />
+                  <div className="relative mt-6 overflow-hidden rounded-lg">
+                    <img
+                      src={lovedOnes}
+                      alt="Loved ones sharing access"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Card 6 — Invoice & payout summary */}
+            <div data-feature-card className="break-inside-avoid">
+              <InvoiceSummaryCard />
+            </div>
+
+            {/* Card 7 — Account & credit summary */}
+            <div data-feature-card className="break-inside-avoid">
+              <AccountSummaryCard />
+            </div>
+
+            {/* Card 8 — Activity analysis (3D skyline) */}
+            <div data-feature-card className="break-inside-avoid">
+              <AnalysisCard />
             </div>
           </div>
         </div>

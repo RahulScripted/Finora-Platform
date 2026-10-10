@@ -4,7 +4,9 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection';
 export function SocialProof() {
   return (
     <AnimatedSection id="social-proof" className="w-full py-12 md:py-16">
-      <SocialProofContent />
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <SocialProofContent />
+      </div>
     </AnimatedSection>
   );
 }
