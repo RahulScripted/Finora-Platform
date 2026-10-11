@@ -3,7 +3,15 @@ import { ArrowUpRight, FileText, TrendingUp } from 'lucide-react';
 
 import { gsap } from '@/lib/gsap';
 import { FoldText } from '@/components/ui/fold-text/FoldText';
-import heroImg from '@/assets/webp/hero.webp';
+import { CloudShader } from '@/components/ui/cloud-shader';
+import {
+  AvatarGroup,
+  AvatarGroupTooltip,
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from '@/components/ui/avatar-group';
+import { HERO_AVATARS } from '@/types/hero';
 import characterImg from '@/assets/webp/Character.webp';
 
 const LIME = '#D9FF57';
@@ -16,18 +24,21 @@ const T_SUBTITLE = 1.7;
 const T_CHARACTER = 1.95;
 const T_CARDS = 2.5;
 const T_CTA = 2.9;
+const T_AVATARS = 3.2;
 
 export function Hero() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const characterRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
+  const avatarsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const subtitle = subtitleRef.current;
     const character = characterRef.current;
     const cta = ctaRef.current;
+    const avatars = avatarsRef.current;
 
     const cardEls = cardsRef.current
       ? Array.from(cardsRef.current.querySelectorAll<HTMLElement>('[data-hero-card]'))
@@ -35,7 +46,7 @@ export function Hero() {
 
     const ctx = gsap.context(() => {
       if (reduce) {
-        gsap.set([subtitle, character, cta, ...cardEls].filter(Boolean), {
+        gsap.set([subtitle, character, cta, avatars, ...cardEls].filter(Boolean), {
           opacity: 1,
           y: 0,
           scale: 1,
@@ -78,12 +89,21 @@ export function Hero() {
         );
       }
 
-      // CTA: last to arrive, rising into place.
+      // CTA: rising into place.
       if (cta) {
         gsap.fromTo(
           cta,
           { opacity: 0, y: 28 },
           { opacity: 1, y: 0, duration: 0.7, delay: T_CTA, ease: 'back.out(1.4)' }
+        );
+      }
+
+      // Avatar group: final social-proof touch, fades up last.
+      if (avatars) {
+        gsap.fromTo(
+          avatars,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.6, delay: T_AVATARS, ease: 'power3.out' }
         );
       }
     });
@@ -93,12 +113,19 @@ export function Hero() {
 
   return (
     <div
-      className="relative isolate w-full overflow-hidden bg-cover bg-center bg-no-repeat"
-      style={{
-        minHeight: '100vh',
-        backgroundImage: `url(${heroImg})`,
-      }}
+      className="relative isolate w-full overflow-hidden"
+      style={{ minHeight: '100vh' }}
     >
+      {/* Animated WebGL sky + drifting clouds (replaces the static hero image) */}
+      <CloudShader
+        className="absolute inset-0 z-0 h-full w-full"
+        count={6}
+        speed={1}
+        cloudColor="#f4faff"
+        skyTopColor="#14577D"
+        skyBottomColor="#C7F0C8"
+      />
+
       {/* Character overlay (animated reveal) */}
       <div
         ref={characterRef}
@@ -126,7 +153,7 @@ export function Hero() {
         >
           <div className="block">
             <FoldText
-              text="Your money."
+              text="Your money"
               splitBy="char"
               hinge="top"
               trigger="mount"
@@ -141,7 +168,7 @@ export function Hero() {
           </div>
           <div className="block">
             <FoldText
-              text="Your moment."
+              text="Your moment"
               splitBy="char"
               hinge="top"
               trigger="mount"
@@ -163,11 +190,6 @@ export function Hero() {
           Smarter ways to manage your business finances.
         </p>
 
-        {/*
-         * Floating cards stage. Absolutely positioned so it's out of the flex
-         * flow — hiding it on mobile won't shift the CTA. The spacer below is
-         * what keeps the CTA pinned to the bottom on every breakpoint.
-         */}
         <div
           ref={cardsRef}
           className="pointer-events-none absolute inset-x-0 top-[42%] z-20 mx-auto hidden w-full max-w-6xl px-6 md:block"
@@ -243,6 +265,23 @@ export function Hero() {
             <ArrowUpRight className="size-5" />
           </span>
         </a>
+
+        {/* Social proof — overlapping avatars with hover tooltips */}
+        <div
+          ref={avatarsRef}
+          className="relative z-30 mt-6 flex items-center gap-3 rounded-full border border-white/20 bg-black/30 py-2 pl-3 pr-5 opacity-0 shadow-lg backdrop-blur-md"
+        >
+          <AvatarGroup>
+            {HERO_AVATARS.map((avatar, index) => (
+              <Avatar key={index} className="size-10 border-[3px] border-white/90">
+                <AvatarImage src={avatar.src} alt={avatar.tooltip} />
+                <AvatarFallback>{avatar.fallback}</AvatarFallback>
+                <AvatarGroupTooltip>{avatar.tooltip}</AvatarGroupTooltip>
+              </Avatar>
+            ))}
+          </AvatarGroup>
+          <p className="text-sm font-semibold text-white">Trusted by 10,000+ businesses</p>
+        </div>
       </div>
     </div>
   );
