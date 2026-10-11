@@ -5,11 +5,11 @@ import { Integration } from './integration';
 import { InvoiceSummaryCard } from './invoice-summary';
 import { AnalysisCard } from './analysis';
 import lovedOnes from '@/assets/webp/ loved-ones.webp';
-import { useGsapReveal, useDrawPaths, useCountUp, useScanLine } from '@/lib/gsap';
+import { useGsapReveal, useDrawPaths, useCountUp, useScanLine, useFeaturesTimeline } from '@/lib/gsap';
 import { useScroller } from '@/lib/scroll-context';
 
 export function Features() {
-  const gridRef = useGsapReveal<HTMLDivElement>({ childrenSelector: '[data-feature-card]', y: 48, stagger: 0.15 });
+  const gridRef = useFeaturesTimeline<HTMLDivElement>();
   const countRef = useCountUp<HTMLSpanElement>(100, { suffix: '%' });
   const arcRef = useDrawPaths<SVGSVGElement>({ duration: 2 });
   const shieldRef = useGsapReveal<HTMLDivElement>({ scale: 0.3, rotate: -90, y: 0, delay: 0.2 });

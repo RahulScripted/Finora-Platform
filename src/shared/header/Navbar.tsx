@@ -8,6 +8,7 @@ import { Hero } from "@/sections/hero/Hero";
 import { Testimonial } from "@/sections/testimonial/Testimonial";
 import { Faq } from "@/sections/faq/Faq";
 import { Features } from "@/sections/features/Features";
+import { HowItWorks } from "@/sections/works/HowItWorks";
 import { SocialProof } from "@/sections/social-proof/SocialProof";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { Parallax } from "@/components/ui/Parallax";
@@ -81,6 +82,7 @@ export default function Navbar() {
                 <Features />
               </Fragment>
             );
+          if (id === "how-it-works") return <HowItWorks key={id} />;
           if (id === "testimonials") return <Testimonial key={id} />;
           if (id === "faq") return <Faq key={id} />;
           return <Placeholder key={id} id={id} label={label} />;

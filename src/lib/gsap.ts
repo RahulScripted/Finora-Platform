@@ -17,10 +17,6 @@ type RevealOptions = {
   childrenSelector?: string;
 };
 
-/**
- * Reveal an element (or its children) when it scrolls into the custom scroll
- * container. Returns a ref to attach to the target element.
- */
 export function useGsapReveal<T extends HTMLElement>(options: RevealOptions = {}) {
   const ref = useRef<T>(null);
   const scroller = useScroller();
@@ -74,9 +70,7 @@ export function useGsapReveal<T extends HTMLElement>(options: RevealOptions = {}
   return ref;
 }
 
-/**
- * Animate the stroke draw of one or more SVG paths within the ref element.
- */
+
 export function useDrawPaths<T extends SVGSVGElement>(
   options: { duration?: number; stagger?: number; start?: string } = {}
 ) {
@@ -117,10 +111,6 @@ export function useDrawPaths<T extends SVGSVGElement>(
   return ref;
 }
 
-/**
- * Continuously draw and erase the stroke of SVG paths in a loop, starting when
- * the element scrolls into view and running infinitely while mounted.
- */
 export function useDrawLoop<T extends SVGSVGElement>(
   options: { duration?: number; hold?: number; start?: string } = {}
 ) {
@@ -162,9 +152,6 @@ export function useDrawLoop<T extends SVGSVGElement>(
   return ref;
 }
 
-/**
- * Count a number up from 0 to `to` when the element scrolls into view.
- */
 export function useCountUp<T extends HTMLElement>(
   to: number,
   options: { suffix?: string; duration?: number; start?: string } = {}
@@ -202,10 +189,6 @@ export function useCountUp<T extends HTMLElement>(
   return ref;
 }
 
-/**
- * Continuously move an element up and down (a scanning motion) while it is in
- * view. Returns a ref to attach to the moving element (e.g. an SVG line/group).
- */
 export function useScanLine<T extends Element>(
   options: { distance?: number; duration?: number } = {}
 ) {
@@ -250,22 +233,12 @@ export function useScanLine<T extends Element>(
 }
 
 type CinematicOptions = {
-  /** Scale at the far start/end of the pass. */
   minScale?: number;
-  /** Vertical travel (px) as it enters/leaves — the parallax depth. */
   rise?: number;
-  /** Max blur (px) at the extremes. */
   blur?: number;
-  /** Smoothing applied to the scrub, in seconds. Higher = more cinematic lag. */
   smooth?: number;
 };
 
-/**
- * Scroll-linked cinematic reveal: as a section enters it scales up, rises into
- * place, fades in and sharpens; while centered it rests at full scale; as it
- * leaves it drifts, shrinks, fades and blurs. Fully reversible and scrubbed to
- * the scroll position for a smooth parallax feel.
- */
 export function useCinematic<T extends HTMLElement>(options: CinematicOptions = {}) {
   const ref = useRef<T>(null);
   const scroller = useScroller();
@@ -277,45 +250,39 @@ export function useCinematic<T extends HTMLElement>(options: CinematicOptions = 
     if (!el || !scrollerEl) return;
 
     const ctx = gsap.context(() => {
-      // Enter phase: finishes well before center so the section rests fully
-      // visible (scale 1, no blur) through the comfortable middle zone.
-      gsap.fromTo(
-        el,
-        { scale: minScale, y: rise, autoAlpha: 0, filter: `blur(${blur}px)` },
-        {
-          scale: 1,
-          y: 0,
-          autoAlpha: 1,
-          filter: 'blur(0px)',
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: el,
-            scroller: scrollerEl,
-            start: 'top 88%',
-            end: 'top 45%',
-            scrub: smooth,
-          },
-        }
-      );
-      // Leave phase: only begins once the section is near the top edge.
-      gsap.fromTo(
-        el,
-        { scale: 1, y: 0, autoAlpha: 1, filter: 'blur(0px)' },
-        {
+      // Single scrubbed timeline that runs enter -> hold -> leave over the full
+      // time the section travels through the viewport. Using one timeline (with
+      // a long "hold" in the middle) guarantees the section is fully visible
+      // while it's centered, instead of two independent triggers that could
+      // both leave it faded out mid-screen.
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          scroller: scrollerEl,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: smooth,
+        },
+      });
+
+      tl
+        // Enter: fade/scale/sharpen in during the first ~25% of the pass.
+        .fromTo(
+          el,
+          { scale: minScale, y: rise, autoAlpha: 0, filter: `blur(${blur}px)` },
+          { scale: 1, y: 0, autoAlpha: 1, filter: 'blur(0px)', ease: 'power2.out', duration: 1 }
+        )
+        // Hold: stay fully visible through the middle of the pass.
+        .to(el, { autoAlpha: 1, scale: 1, y: 0, filter: 'blur(0px)', duration: 2 })
+        // Leave: fade/scale/blur out during the last ~25% of the pass.
+        .to(el, {
           scale: minScale,
           y: -rise,
           autoAlpha: 0,
           filter: `blur(${blur}px)`,
           ease: 'power2.in',
-          scrollTrigger: {
-            trigger: el,
-            scroller: scrollerEl,
-            start: 'bottom 40%',
-            end: 'bottom 5%',
-            scrub: smooth,
-          },
-        }
-      );
+          duration: 1,
+        });
     }, el);
 
     return () => ctx.revert();
@@ -324,10 +291,6 @@ export function useCinematic<T extends HTMLElement>(options: CinematicOptions = 
   return ref;
 }
 
-/**
- * Layered parallax: move an element vertically relative to scroll for depth.
- * `speed` > 0 drifts down (background), < 0 drifts up (foreground).
- */
 export function useParallax<T extends HTMLElement>(speed = 0.2) {
   const ref = useRef<T>(null);
   const scroller = useScroller();
@@ -357,6 +320,81 @@ export function useParallax<T extends HTMLElement>(speed = 0.2) {
 
     return () => ctx.revert();
   }, [scroller, speed]);
+
+  return ref;
+}
+
+export function useHowItWorksTimeline<T extends HTMLElement>(start = 'top 75%') {
+  const ref = useRef<T>(null);
+  const scroller = useScroller();
+
+  useEffect(() => {
+    const el = ref.current;
+    const scrollerEl = scroller?.current;
+    if (!el || !scrollerEl) return;
+
+    const q = (sel: string) => Array.from(el.querySelectorAll<HTMLElement>(sel));
+
+    const header = q('[data-hiw-header]');
+    const phone = q('[data-hiw-phone]');
+    const leftCards = q('[data-hiw-left]');
+    const rightCards = q('[data-hiw-right]');
+    const benefits = q('[data-hiw-benefit]');
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+        scrollTrigger: {
+          trigger: el,
+          scroller: scrollerEl,
+          start,
+          once: true,
+        },
+      });
+
+      tl.from(header, { opacity: 0, y: -48, duration: 0.7, stagger: 0.12 })
+        .from(phone, { opacity: 0, y: 80, scale: 0.94, duration: 0.8 }, '-=0.2')
+        .from(leftCards, { opacity: 0, x: -56, duration: 0.6, stagger: 0.15 }, '-=0.4')
+        .from(rightCards, { opacity: 0, x: 56, duration: 0.6, stagger: 0.15 }, '<')
+        .from(benefits, { opacity: 0, y: 32, duration: 0.5, stagger: 0.14 }, '-=0.1');
+    }, el);
+
+    return () => ctx.revert();
+  }, [scroller, start]);
+
+  return ref;
+}
+
+export function useFeaturesTimeline<T extends HTMLElement>(start = 'top 80%') {
+  const ref = useRef<T>(null);
+  const scroller = useScroller();
+
+  useEffect(() => {
+    const el = ref.current;
+    const scrollerEl = scroller?.current;
+    if (!el || !scrollerEl) return;
+
+    const cards = Array.from(el.querySelectorAll<HTMLElement>('[data-feature-card]'));
+    if (cards.length === 0) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(cards, {
+        opacity: 0,
+        y: 56,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          scroller: scrollerEl,
+          start,
+          once: true,
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, [scroller, start]);
 
   return ref;
 }
