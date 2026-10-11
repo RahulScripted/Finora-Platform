@@ -8,36 +8,35 @@ export type HeroAvatar = {
   tooltip: string;
 };
 
-/** Social-proof avatars rendered beneath the hero CTA. */
 export const HERO_AVATARS: ReadonlyArray<HeroAvatar> = [
   {
-    src: 'https://pbs.twimg.com/profile_images/1948770261848756224/oPwqXMD6_400x400.jpg',
-    fallback: 'SK',
-    tooltip: 'Skyleen',
+    src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces',
+    fallback: 'AR',
+    tooltip: 'Aarav R.',
   },
   {
-    src: 'https://pbs.twimg.com/profile_images/1593304942210478080/TUYae5z7_400x400.jpg',
-    fallback: 'CN',
-    tooltip: 'Shadcn',
+    src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=faces',
+    fallback: 'MK',
+    tooltip: 'Meera K.',
   },
   {
-    src: 'https://pbs.twimg.com/profile_images/1677042510839857154/Kq4tpySA_400x400.jpg',
-    fallback: 'AW',
-    tooltip: 'Adam Wathan',
+    src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces',
+    fallback: 'SV',
+    tooltip: 'Sanjay V.',
   },
   {
-    src: 'https://pbs.twimg.com/profile_images/1783856060249595904/8TfcCN0r_400x400.jpg',
-    fallback: 'GR',
-    tooltip: 'Guillermo Rauch',
+    src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces',
+    fallback: 'PN',
+    tooltip: 'Priya N.',
   },
   {
-    src: 'https://pbs.twimg.com/profile_images/1534700564810018816/anAuSfkp_400x400.jpg',
-    fallback: 'JH',
-    tooltip: 'Jhey',
+    src: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop&crop=faces',
+    fallback: 'RD',
+    tooltip: 'Rohan D.',
   },
   {
-    src: 'https://pbs.twimg.com/profile_images/1927474594102784000/Al0g-I6o_400x400.jpg',
-    fallback: 'DH',
-    tooltip: 'David Haz',
+    src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=faces',
+    fallback: 'IS',
+    tooltip: 'Isha S.',
   },
 ];
