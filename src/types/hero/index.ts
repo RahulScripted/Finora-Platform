@@ -1,10 +1,6 @@
-/** A single social-proof avatar shown in the hero's avatar group. */
 export type HeroAvatar = {
-  /** Remote image URL for the avatar. */
   src: string;
-  /** Initials shown while the image loads or if it fails. */
   fallback: string;
-  /** Name revealed in the tooltip on hover. */
   tooltip: string;
 };
 
