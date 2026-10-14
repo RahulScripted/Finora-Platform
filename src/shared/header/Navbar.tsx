@@ -12,6 +12,7 @@ import { HowItWorks } from "@/sections/works/HowItWorks";
 import { SocialProof } from "@/sections/social-proof/SocialProof";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { Parallax } from "@/components/ui/Parallax";
+import { Footer } from "@/shared/footer/Footer";
 
 function Placeholder({ id, label }: { id: string; label: string }) {
   return (
@@ -87,6 +88,7 @@ export default function Navbar() {
           if (id === "faq") return <Faq key={id} />;
           return <Placeholder key={id} id={id} label={label} />;
         })}
+        <Footer />
       </ScrollProvider>
     </NotchNav>
   );
