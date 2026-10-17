@@ -13,6 +13,7 @@ import { SocialProof } from "@/sections/social-proof/SocialProof";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { Parallax } from "@/components/ui/Parallax";
 import { Footer } from "@/shared/footer/Footer";
+import { useLenisScroll } from "@/lib/gsap";
 
 function Placeholder({ id, label }: { id: string; label: string }) {
   return (
@@ -33,6 +34,8 @@ function Placeholder({ id, label }: { id: string; label: string }) {
 export default function Navbar() {
   const [activeId, setActiveId] = useState("home");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useLenisScroll(scrollRef);
 
   const handleActiveChange = useCallback((id: string) => {
     setActiveId(id);
@@ -74,20 +77,22 @@ export default function Navbar() {
       scrollRef={scrollRef}
     >
       <ScrollProvider scrollRef={scrollRef}>
-        {NAV_ITEMS.map(({ id, label }) => {
-          if (id === "home") return <Hero key={id} />;
-          if (id === "features")
-            return (
-              <Fragment key={id}>
-                <SocialProof />
-                <Features />
-              </Fragment>
-            );
-          if (id === "how-it-works") return <HowItWorks key={id} />;
-          if (id === "testimonials") return <Testimonial key={id} />;
-          if (id === "faq") return <Faq key={id} />;
-          return <Placeholder key={id} id={id} label={label} />;
-        })}
+        <div className="relative z-10 bg-background shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
+          {NAV_ITEMS.map(({ id, label }) => {
+            if (id === "home") return <Hero key={id} />;
+            if (id === "features")
+              return (
+                <Fragment key={id}>
+                  <SocialProof />
+                  <Features />
+                </Fragment>
+              );
+            if (id === "how-it-works") return <HowItWorks key={id} />;
+            if (id === "testimonials") return <Testimonial key={id} />;
+            if (id === "faq") return <Faq key={id} />;
+            return <Placeholder key={id} id={id} label={label} />;
+          })}
+        </div>
         <Footer />
       </ScrollProvider>
     </NotchNav>

@@ -1,6 +1,30 @@
-import { StaggerTestimonials } from '@/components/testimonial/StaggerTestimonials';
+import { TestimonialsColumn } from '@/components/ui/testimonials-columns-1';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { Parallax } from '@/components/ui/Parallax';
+import { testimonials } from '@/types/testimonial';
+import type { TestimonialData } from '@/types/testimonial';
+
+const COLUMN_COUNT = 8;
+
+// Round-robin spread so each visible column has a good mix.
+const columns: TestimonialData[][] = Array.from({ length: COLUMN_COUNT }, () => []);
+testimonials.forEach((t, i) => {
+  columns[i % COLUMN_COUNT].push(t);
+});
+
+const DURATIONS = [15, 19, 17, 21, 16, 20, 18, 22];
+
+// Responsive visibility: 2 (mobile) / 4 (md) / 6 (lg) / 8 (xl).
+const VISIBILITY = [
+  '',
+  '',
+  'hidden md:block',
+  'hidden md:block',
+  'hidden lg:block',
+  'hidden lg:block',
+  'hidden xl:block',
+  'hidden xl:block',
+];
 
 export function Testimonial() {
   return (
@@ -15,7 +39,17 @@ export function Testimonial() {
           </p>
         </div>
       </Parallax>
-      <StaggerTestimonials />
+
+      <div className="flex w-full justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
+        {columns.map((column, i) => (
+          <TestimonialsColumn
+            key={i}
+            testimonials={column}
+            duration={DURATIONS[i]}
+            className={VISIBILITY[i]}
+          />
+        ))}
+      </div>
     </AnimatedSection>
   );
 }

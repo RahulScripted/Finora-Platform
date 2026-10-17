@@ -1,9 +1,56 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
 import { useScroller } from './scroll-context';
 
 gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * Smooth-scrolls the given container with Lenis and keeps GSAP ScrollTrigger in
+ * sync. The app scrolls inside a dedicated element (not window), so Lenis is
+ * bound to that element as both wrapper and content, and ScrollTrigger is told
+ * to use it as the scroller via scrollerProxy.
+ */
+export function useLenisScroll(scrollRef: RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const wrapper = scrollRef.current;
+    if (!wrapper) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+
+    const content = wrapper.firstElementChild as HTMLElement | null;
+
+    const lenis = new Lenis({
+      wrapper,
+      content: content ?? wrapper,
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    // Keep ScrollTrigger in sync with Lenis. The existing triggers already use
+    // this element as their `scroller`, so no scrollerProxy is needed — Lenis
+    // moves the container's real scrollTop and ScrollTrigger reads it natively.
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const onRaf = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(onRaf);
+    gsap.ticker.lagSmoothing(0);
+
+    // Refresh after Lenis + layout settle, otherwise scrubbed triggers can
+    // compute the wrong progress and leave sections stuck hidden.
+    const refreshId = requestAnimationFrame(() => ScrollTrigger.refresh());
+
+    return () => {
+      cancelAnimationFrame(refreshId);
+      gsap.ticker.remove(onRaf);
+      lenis.off('scroll', ScrollTrigger.update);
+      lenis.destroy();
+    };
+  }, [scrollRef]);
+}
 
 type RevealOptions = {
   y?: number;
@@ -283,6 +330,28 @@ export function useCinematic<T extends HTMLElement>(options: CinematicOptions = 
           ease: 'power2.in',
           duration: 1,
         });
+
+      // Safety net: whenever the section is comfortably in view, force it fully
+      // visible. Guards against scrub progress being miscomputed (e.g. during
+      // Lenis init) and leaving the section stuck at autoAlpha: 0.
+      ScrollTrigger.create({
+        trigger: el,
+        scroller: scrollerEl,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        onToggle: (self) => {
+          if (self.isActive) {
+            gsap.to(el, {
+              autoAlpha: 1,
+              scale: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.25,
+              overwrite: 'auto',
+            });
+          }
+        },
+      });
     }, el);
 
     return () => ctx.revert();

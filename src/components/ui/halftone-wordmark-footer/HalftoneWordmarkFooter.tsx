@@ -39,6 +39,7 @@ export interface HalftoneWordmarkFooterProps {
   monoFamily?: string;
   height?: string;
   className?: string;
+  widthScale?: number;
 }
 
 const PRESETS: { [K in HalftonePreset]: HalftonePalette } = {
@@ -167,6 +168,7 @@ export function HalftoneWordmarkFooter({
   monoFamily = MONO_STACK,
   height = "560px",
   className = "",
+  widthScale = 1,
 }: HalftoneWordmarkFooterProps) {
   const colors = { ...(PRESETS[preset] || PRESETS.night), ...(palette || {}) };
   const rootRef = React.useRef(null as HTMLElement | null);
@@ -181,8 +183,20 @@ export function HalftoneWordmarkFooter({
     fontFamily,
     fontWeight,
     wordmark,
+    widthScale,
   });
-  opts.current = { colors, dotGap, radius, crop, grain, interactive, fontFamily, fontWeight, wordmark };
+  opts.current = {
+    colors,
+    dotGap,
+    radius,
+    crop,
+    grain,
+    interactive,
+    fontFamily,
+    fontWeight,
+    wordmark,
+    widthScale,
+  };
 
   const key = [
     wordmark,
@@ -191,6 +205,7 @@ export function HalftoneWordmarkFooter({
     grain,
     fontFamily,
     fontWeight,
+    widthScale,
     colors.background,
     colors.ink,
     colors.warm,
@@ -237,14 +252,20 @@ export function HalftoneWordmarkFooter({
       const face = o.fontWeight + " 100px " + o.fontFamily;
       m.font = face;
       const word = o.wordmark || " ";
-      const fit = hwfFitSize(m.measureText(word).width, w * 1.02);
+      const sx = Math.max(0.3, Math.min(1, o.widthScale));
+      const fit = hwfFitSize(m.measureText(word).width, (w * 1.02) / sx);
       m.font = o.fontWeight + " " + fit + "px " + o.fontFamily;
       const box = m.measureText(word);
+      const drawnWidth = box.width * sx;
       const cap = box.actualBoundingBoxAscent || fit * 0.72;
       const c = Math.max(0, Math.min(0.6, o.crop));
       m.fillStyle = "#000";
       m.textBaseline = "alphabetic";
-      m.fillText(word, (w - box.width) / 2, h + cap * c);
+      m.save();
+      m.translate((w - drawnWidth) / 2, h + cap * c);
+      m.scale(sx, 1);
+      m.fillText(word, 0, 0);
+      m.restore();
       const img = m.getImageData(0, 0, w, h).data;
 
       const gap = Math.max(3, o.dotGap);

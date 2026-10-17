@@ -43,18 +43,25 @@ export function Footer() {
   };
 
   return (
-    <div className="-mx-3 -mb-3 mt-16 h-[560px] shrink-0 overflow-hidden rounded-b-none sm:-mx-4 md:-mx-6 md:rounded-b-2xl">
-      <HalftoneWordmarkFooter
-        wordmark="finora"
-        label="Finora"
-        meta="©2026 · India"
-        brandIcon={<img src={logoSvg} alt="Finora" className="h-6 w-auto" />}
-        columns={COLUMNS}
-        backToTop={false}
-        onLinkClick={handleLinkClick}
-        palette={{ background: "#0c0c0b", ink: "#e9e4da", warm: "#ff7226" }}
-        height="560px"
-      />
+    <div
+      className="relative z-0 -mx-3 -mb-3 shrink-0 sm:-mx-4 md:-mx-6"
+      style={{ height: 720 }}
+    >
+      <div className="sticky bottom-0 h-[720px] overflow-hidden rounded-b-none md:rounded-b-2xl">
+        <HalftoneWordmarkFooter
+          wordmark="finora"
+          label="Finora"
+          meta="©2026 · India"
+          brandIcon={<img src={logoSvg} alt="Finora" className="h-6 w-auto" />}
+          columns={COLUMNS}
+          backToTop={false}
+          onLinkClick={handleLinkClick}
+          crop={0.34}
+          widthScale={0.82}
+          palette={{ background: "#0c0c0b", ink: "#e9e4da", warm: "#ff7226" }}
+          height="720px"
+        />
+      </div>
     </div>
   );
 }
